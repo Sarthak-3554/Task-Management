@@ -3,7 +3,14 @@
 .other-tasks-container {
     max-width: 600px;
     margin: auto;
+    /* padding-top: 10px; */
+    /* margin-top: 20px; */
+    /* margin-bottom: 20px; */
   }
+
+  /* .heading{
+    margin: auto;
+  } */
   
   .form-group {
     margin-bottom: 15px;

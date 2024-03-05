@@ -1,19 +1,26 @@
 // TaskReminder.js
-import { toast } from 'react-toastify';
 
-export function checkTasksAndSendReminders(tasks) {
+// Function to check tasks in local storage and send reminders
+export function checkTasksAndSendReminders() {
+    // Retrieve tasks from local storage
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    console.log(tasks);
+    // Get current time
     const currentTime = new Date();
-    // console.log(tasks);
+  
+    // Iterate through tasks
     tasks.forEach(task => {
-      const startDate = task.date || task.startDate; // Use 'date' if available, otherwise use 'startDate'
-      const startTime = new Date(`${startDate} ${task.startTime}`);
+      // Parse task start time
+      const startTime = new Date(`${task.startDate} ${task.startTime}`);
+  
+      // Calculate time difference in milliseconds
       const timeDiff = startTime.getTime() - currentTime.getTime();
   
+      // If time difference is less than 10 minutes (600,000 milliseconds), send reminder
       if (timeDiff > 0 && timeDiff <= 600000) {
-        const taskName = task.taskName || task.session; // Use 'taskName' if available, otherwise use 'session'
-        toast(`Reminder: Task "${taskName}" starts in less than 10 minutes!`,{
-          autoClose : 5000,
-        });
+        // Send reminder (you can customize this based on your application, e.g., show a notification)
+        alert(`Reminder: Task "${task.name}" starts in less than 10 minutes!`);
       }
     });
-}
+  }
+  

@@ -1,5 +1,7 @@
 // Navbar.js
 import React, { useState } from 'react';
+
+// Navlink - react hook aahe jyamule tu links deu shakto
 import { NavLink } from 'react-router-dom';
 import './Navbar.css'; // Import your CSS file for styling
 
@@ -16,11 +18,16 @@ const Navbar = () => {
 
   return (
     <div className="navbar-container">
+
       <div className="navbar-header">
+
         <div className="menu-icon" onClick={toggleSidebar}>
+
           &#9776; {/* This is the Unicode character for the menu icon */}
         </div>
+
         <h1>The Classroom App</h1>
+
       </div>
       {isSidebarOpen && (
         <div className="sidebar" onMouseLeave={closeSidebar}>

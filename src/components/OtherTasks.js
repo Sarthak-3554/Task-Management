@@ -17,6 +17,8 @@ function OtherTasks({ updateAllTasks }) {
 
   const sessionOptions = ['conducted', 'attended', 'organised'];
 
+
+  //Here we take the e variable from select option in select dropdown and access the name and value
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setTask({
@@ -37,13 +39,40 @@ function OtherTasks({ updateAllTasks }) {
       );
       setTaskList(updatedTaskList);
       updateAllTasks(updatedTaskList);
-    } else {
+    } 
+    
+    else {
       // If no existing task is found, add a new task to the list
       const updatedTaskList = [...taskList, { ...task }];
-      console.log(updatedTaskList);
       setTaskList(updatedTaskList);
       updateAllTasks(updatedTaskList);
     }
+
+    fetch("http://localhost:8000/otherTask", {
+      method: "POST",
+      body: JSON.stringify({
+        session:task.session, startTime:task.startTime, endTime:task.endTime, startDate:task.startDate, 
+        endDate:task.endDate,subject:task.subject,description:task.description
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(data => {
+          window.alert(data.message);
+        });
+      }
+     
+      window.alert('Task created successfull');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
+
+
 
     // Reset the task state
     setTask({
@@ -56,13 +85,20 @@ function OtherTasks({ updateAllTasks }) {
       description: '',
       status: 'in progress',
     });
+    
   };
 
+
+  // ----------  COMPLETE INPROGRESS INCOMPLETE SATHI -------------------------------
+
   const handleStatusChange = (index, newStatus) => {
+
     const updatedTaskList = [...taskList];
     updatedTaskList[index].status = newStatus;
+
     setTaskList(updatedTaskList);
     updateAllTasks(updatedTaskList);
+
   };
 
   const handleTaskDelete = (index) => {
@@ -74,9 +110,19 @@ function OtherTasks({ updateAllTasks }) {
 
   return (
     <div className="other-tasks-container">
+      
+      <div className="heading">
       <h2>Create Other Task</h2>
+
+      </div>
+     
+      {/* <h1>Create kara Tasks</h1> */}
+
+
       <form>
         <div className="form-group">
+
+
           <label>Session:</label>
           <select
             name="session"
@@ -91,6 +137,8 @@ function OtherTasks({ updateAllTasks }) {
             ))}
           </select>
         </div>
+
+
         <div className="form-group">
           <label>Start Date:</label>
           <input
@@ -146,17 +194,30 @@ function OtherTasks({ updateAllTasks }) {
             onChange={handleInputChange}
           ></textarea>
         </div>
+
+
         <div className="form-group">
           <button type="button" onClick={handleTaskCompleted}>
             Create Task ✓
           </button>
         </div>
       </form>
+
+
+{/* ----------------------- TASK LIST FUNCTIONALITY ----------------------------------------- */}
+
+
       <div className="task-list">
         <h3>Task List</h3>
+
+
         <ul>
+
+
           {taskList.map((taskItem, index) => (
             <li key={index}>
+
+
               <div>
                 <strong>Session:</strong> {taskItem.session}
               </div>
@@ -183,6 +244,9 @@ function OtherTasks({ updateAllTasks }) {
               <div>
                 <strong>Status:</strong> {taskItem.status}
               </div>
+
+
+
               <span
                 role="img"
                 aria-label="Completed"
@@ -204,13 +268,13 @@ function OtherTasks({ updateAllTasks }) {
               >
                 🔄
               </span>
-              <span
+              {/* <span
                 role="img"
                 aria-label="Update"
                 onClick={() => console.log('Update task')}
               >
                 ✏️
-              </span>
+              </span> */}
               <span
                 role="img"
                 aria-label="Delete"
@@ -220,6 +284,8 @@ function OtherTasks({ updateAllTasks }) {
               </span>
             </li>
           ))}
+
+
         </ul>
       </div>
     </div>

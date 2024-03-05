@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import './Home.css';
 
 function Home({ updateAllTasks }) {
+
   const [tasks, setTasks] = useState([]);
   const [taskForm, setTaskForm] = useState({
     name: '',
@@ -29,6 +30,36 @@ function Home({ updateAllTasks }) {
     };
 
     setTasks((prevTasks) => [...prevTasks, newTask]);
+
+    fetch("http://localhost:8000/generalTask", {
+      method: "POST",
+      body: JSON.stringify({
+        taskName:taskForm.name,
+        startTime:taskForm.startTime,
+        endTime:taskForm.endTime,
+        date:taskForm.startDate,
+        subject:taskForm.subject,
+        batch:taskForm.batch,
+        className:taskForm.class,
+        description:taskForm.description,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(data => {
+          window.alert(data.message);
+        });
+      }
+     
+      window.alert('Task created successfull');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
     setTaskForm({
       name: '',
       startTime: '',
@@ -53,7 +84,12 @@ function Home({ updateAllTasks }) {
 
   return (
     <div className="home-container">
-      <h2>Create Task</h2>
+
+      <div className="heading">
+        <h2>Create Task</h2>
+      </div>
+      
+
       <form className="task-form">
         <label>
           Task Name:

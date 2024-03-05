@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import './PersonalTasks.css';
 
 function PersonalTasks({ updateAllTasks }) {
+  
   const [taskList, setTaskList] = useState([]);
   const [task, setTask] = useState({
     taskName: '',
@@ -23,10 +24,44 @@ function PersonalTasks({ updateAllTasks }) {
     });
   };
 
+  
+
+
+
+
+
   const handleTaskCompleted = () => {
     const updatedTaskList = [...taskList, { ...task }];
-    console.log(updatedTaskList);
     setTaskList(updatedTaskList);
+
+    fetch("http://localhost:8000/personalTask", {
+      method: "POST",
+      body: JSON.stringify({
+        taskName:task.taskName,
+        startTime:task.startTime,
+        endTime:task.endTime,
+        startDate:task.startDate,
+        endDate:task.endDate,
+        description:task.description
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(data => {
+          window.alert(data.message);
+        });
+      }
+     
+      window.alert('Task created successfull');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
+    
     setTask({
       taskName: '',
       startDate: '',
@@ -43,6 +78,7 @@ function PersonalTasks({ updateAllTasks }) {
   const handleStatusChange = (index, newStatus) => {
     const updatedTaskList = [...taskList];
     updatedTaskList[index].status = newStatus;
+
     setTaskList(updatedTaskList);
     updateAllTasks(updatedTaskList);
   };
@@ -50,6 +86,7 @@ function PersonalTasks({ updateAllTasks }) {
   const handleTaskDelete = (index) => {
     const updatedTaskList = [...taskList];
     updatedTaskList.splice(index, 1);
+    
     setTaskList(updatedTaskList);
     updateAllTasks(updatedTaskList);
   };
@@ -111,14 +148,21 @@ function PersonalTasks({ updateAllTasks }) {
             onChange={handleInputChange}
           ></textarea>
         </div>
+
         <div className="form-group">
           <button type="button" onClick={handleTaskCompleted}>
             Create Task ✓
           </button>
         </div>
+
+
+
+
       </form>
       <div className="task-list">
         <h3>Task List</h3>
+
+
         {taskList.map((taskItem, index) => (
           <div key={index} className="task-item">
             <div>

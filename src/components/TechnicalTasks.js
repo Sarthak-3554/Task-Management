@@ -6,7 +6,8 @@ function TechnicalTasks({ updateAllTasks }) {
   const [taskList, setTaskList] = useState([]);
   const [task, setTask] = useState({
     technicalTask: '',
-    taskDate: '',
+    startDate: '',
+    endDate:'',
     startTime: '',
     endTime: '',
     description: '',
@@ -36,16 +37,53 @@ function TechnicalTasks({ updateAllTasks }) {
 
     if (existingTaskIndex === -1) {
       const updatedTaskList = [...taskList, { ...task }];
-      console.log(updatedTaskList);
       setTaskList(updatedTaskList);
+
+      // fetch("http://localhost:8000/techTask",{method:"POST",body:})
+
+
+
+
+      fetch("http://localhost:8000/techTask", {
+      method: "POST",
+      body: JSON.stringify({
+        taskName:task.technicalTask, startTime:task.startTime, endTime:task.endTime, 
+        startDate:task.startDate, endDate:task.endDate,description:task.description
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(data => {
+          window.alert(data.message);
+        });
+      }
+     
+      window.alert('Task created successfull');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
+
+
+
+
+
+
       setTask({
         technicalTask: '',
-        taskDate: '',
+        startDate: '',
+        endDate:'',
         startTime: '',
         endTime: '',
         description: '',
         status: 'in progress',
       });
+
+
 
       updateAllTasks(updatedTaskList);
     }
@@ -137,6 +175,9 @@ function TechnicalTasks({ updateAllTasks }) {
           </button>
         </div>
       </form>
+
+
+      
       <div className="task-list">
         <h3>Task List</h3>
         <ul>

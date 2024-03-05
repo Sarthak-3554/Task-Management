@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './ViewTasks.css';
 
 function ViewTasks({ taskList }) {
+
   const [selectedStartDate, setSelectedStartDate] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
 
@@ -15,20 +16,29 @@ function ViewTasks({ taskList }) {
   };
 
   const filterTasks = () => {
+    
     return taskList.filter((task) => {
       const isStartDateMatch =
         selectedStartDate ? task.startDate === selectedStartDate : true;
+
       const isCategoryMatch =
         selectedCategory === 'all' ? true : task.status === selectedCategory;
 
       return isStartDateMatch && isCategoryMatch;
+
     });
   };
 
+
+
   return (
+
     <div className="view-tasks-container">
+
       <h2>View Tasks</h2>
+
       <div className="filters-container">
+
         <div className="filter">
           <label>Select Start Date:</label>
           <input
@@ -37,6 +47,7 @@ function ViewTasks({ taskList }) {
             onChange={handleStartDateChange}
           />
         </div>
+
         <div className="filter">
           <label>Select Category:</label>
           <select value={selectedCategory} onChange={handleCategoryChange}>
@@ -46,9 +57,13 @@ function ViewTasks({ taskList }) {
             <option value="in progress">In Progress</option>
           </select>
         </div>
+
       </div>
 
+
+
       <div className="task-list">
+
         {filterTasks().map((task, index) => (
           <div key={index} className="task-item">
             <div>
