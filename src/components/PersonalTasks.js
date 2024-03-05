@@ -1,10 +1,15 @@
-// PersonalTasks.js
+// 
 
-import React, { useState } from 'react';
+
+
+
+
+
+// PersonalTasks.js
+import React, { useState, useEffect } from 'react';
 import './PersonalTasks.css';
 
 function PersonalTasks({ updateAllTasks }) {
-  
   const [taskList, setTaskList] = useState([]);
   const [task, setTask] = useState({
     taskName: '',
@@ -16,6 +21,23 @@ function PersonalTasks({ updateAllTasks }) {
     status: 'in progress',
   });
 
+  useEffect(() => {
+    fetchPersonalTasks();
+  }, []);
+
+  const fetchPersonalTasks = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/getPersonalTask");
+      if (!response.ok) {
+        throw new Error('Failed to fetch tasks');
+      }
+      const tasks = await response.json();
+      setTaskList(tasks);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setTask({
@@ -24,12 +46,6 @@ function PersonalTasks({ updateAllTasks }) {
     });
   };
 
-  
-
-
-
-
-
   const handleTaskCompleted = () => {
     const updatedTaskList = [...taskList, { ...task }];
     setTaskList(updatedTaskList);
@@ -37,12 +53,13 @@ function PersonalTasks({ updateAllTasks }) {
     fetch("http://localhost:8000/personalTask", {
       method: "POST",
       body: JSON.stringify({
-        taskName:task.taskName,
-        startTime:task.startTime,
-        endTime:task.endTime,
-        startDate:task.startDate,
-        endDate:task.endDate,
-        description:task.description
+        taskName: task.taskName,
+        startTime: task.startTime,
+        endTime: task.endTime,
+        startDate: task.startDate,
+        endDate: task.endDate,
+        description: task.description,
+        status: task.status
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -54,14 +71,12 @@ function PersonalTasks({ updateAllTasks }) {
           window.alert(data.message);
         });
       }
-     
-      window.alert('Task created successfull');
+      window.alert('Task created successfully');
     })
     .catch(error => {
       console.error('Error:', error);
     });
 
-    
     setTask({
       taskName: '',
       startDate: '',
@@ -78,7 +93,6 @@ function PersonalTasks({ updateAllTasks }) {
   const handleStatusChange = (index, newStatus) => {
     const updatedTaskList = [...taskList];
     updatedTaskList[index].status = newStatus;
-
     setTaskList(updatedTaskList);
     updateAllTasks(updatedTaskList);
   };
@@ -86,7 +100,6 @@ function PersonalTasks({ updateAllTasks }) {
   const handleTaskDelete = (index) => {
     const updatedTaskList = [...taskList];
     updatedTaskList.splice(index, 1);
-    
     setTaskList(updatedTaskList);
     updateAllTasks(updatedTaskList);
   };
@@ -148,21 +161,14 @@ function PersonalTasks({ updateAllTasks }) {
             onChange={handleInputChange}
           ></textarea>
         </div>
-
         <div className="form-group">
           <button type="button" onClick={handleTaskCompleted}>
             Create Task ✓
           </button>
         </div>
-
-
-
-
       </form>
       <div className="task-list">
         <h3>Task List</h3>
-
-
         {taskList.map((taskItem, index) => (
           <div key={index} className="task-item">
             <div>
